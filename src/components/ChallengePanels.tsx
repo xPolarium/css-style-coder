@@ -33,8 +33,11 @@ const files = {
 
 function PanelTitle({ children }: React.PropsWithChildren) {
   return (
-    <div className="flex justify-between bg-primary-foreground text-xl text-muted-foreground">
+    <div className="flex items-center justify-between text-xl text-muted-foreground">
       {children}
+      <button className="mr-1 hover:text-secondary">
+        <Maximize />
+      </button>
     </div>
   );
 }
@@ -126,9 +129,6 @@ export default function ChallengePanels() {
             >
               JS
             </button>
-          </div>
-          <div>
-            <Maximize />
           </div>
         </PanelTitle>
         <PanelContent>
