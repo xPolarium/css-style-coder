@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
 import {
   ResizableHandle,
   ResizablePanel,
@@ -9,8 +12,9 @@ import { Maximize } from "lucide-react";
 
 import Editor from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+
+import type { ImperativePanelHandle } from "react-resizable-panels";
+
 import clsx from "clsx";
 
 const files = {
@@ -35,9 +39,6 @@ function PanelTitle({ children }: React.PropsWithChildren) {
   return (
     <div className="flex items-center justify-between text-xl text-muted-foreground">
       {children}
-      <button className="mr-1 hover:text-secondary">
-        <Maximize />
-      </button>
     </div>
   );
 }
@@ -51,6 +52,10 @@ function PanelContent({
 
 export default function ChallengePanels() {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
+  const editorPanelRef = useRef<ImperativePanelHandle>(null);
+  const challengePanelRef = useRef<ImperativePanelHandle>(null);
+  const previewPanelRef = useRef<ImperativePanelHandle>(null);
 
   const [fileName, setFileName] = useState("style.css");
   const [source, setSource] = useState({ javascript: "", css: "", html: "" });
@@ -100,12 +105,22 @@ export default function ChallengePanels() {
     }));
   }
 
+  function togglePanelCollpase(panel: ImperativePanelHandle | null) {
+    if (panel) panel.isCollapsed() ? panel.expand() : panel.collapse();
+  }
+
   return (
     <ResizablePanelGroup
       direction="horizontal"
       className="min-h-fit rounded-lg border"
     >
-      <ResizablePanel defaultSize={50}>
+      <ResizablePanel
+        defaultSize={50}
+        ref={editorPanelRef}
+        collapsible
+        minSize={15}
+        collapsedSize={15}
+      >
         <PanelTitle>
           <div>
             <button
@@ -130,6 +145,12 @@ export default function ChallengePanels() {
               JS
             </button>
           </div>
+          <button
+            onClick={() => togglePanelCollpase(editorPanelRef.current)}
+            className="mr-1 hover:text-secondary"
+          >
+            <Maximize />
+          </button>
         </PanelTitle>
         <PanelContent>
           <Editor
@@ -145,16 +166,41 @@ export default function ChallengePanels() {
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={50}>
         <ResizablePanelGroup direction="vertical">
-          <ResizablePanel defaultSize={25}>
+          <ResizablePanel
+            defaultSize={25}
+            ref={challengePanelRef}
+            collapsible
+            minSize={15}
+            collapsedSize={15}
+          >
             <PanelTitle>
               <h1 className="p-1">Challenge</h1>
+              <button
+                onClick={() => togglePanelCollpase(challengePanelRef.current)}
+                className="mr-1 hover:text-secondary"
+              >
+                <Maximize />
+              </button>
             </PanelTitle>
             <PanelContent></PanelContent>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel className="flex flex-col" defaultSize={75}>
+          <ResizablePanel
+            className="flex flex-col"
+            defaultSize={75}
+            ref={previewPanelRef}
+            collapsible
+            minSize={15}
+            collapsedSize={15}
+          >
             <PanelTitle>
               <h1 className="p-1">Preview</h1>
+              <button
+                onClick={() => togglePanelCollpase(previewPanelRef.current)}
+                className="mr-1 hover:text-secondary"
+              >
+                <Maximize />
+              </button>
             </PanelTitle>
             <PanelContent className="h-full">
               <iframe
