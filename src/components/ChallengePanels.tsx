@@ -76,6 +76,12 @@ export default function ChallengePanels() {
               html {
                 height: 100%;
               }
+
+              body {
+                background-color: white;
+                color: black;
+              }
+
               ${source.css}
             </style>
           </head>
