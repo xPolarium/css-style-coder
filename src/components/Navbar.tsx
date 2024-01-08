@@ -1,8 +1,10 @@
+import Link from "next/link";
+
 export default function Navbar() {
   return (
     <div className="flex justify-between">
       <div>CSS Coder</div>
-      <button>Challenges</button>
+      <Link href="/challenges/test">Challenges</Link>
     </div>
   );
 }
